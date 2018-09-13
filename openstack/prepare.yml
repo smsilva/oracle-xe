@@ -5,7 +5,7 @@
   tasks:
 
   - set_fact:
-      oracle_xe_instance_ip: $(openstack floating ip list --port port-32 -f value -c "Floating IP Address")
+      oracle_xe_instance_ip: $(openstack floating ip list --port port-oracle-xe -f value -c "Floating IP Address")
 
   - name: register instance ip
     shell: >
@@ -18,7 +18,7 @@
       --image centos7 \
       --flavor m1.small \
       --key-name director \
-      --port port-32 \
+      --port port-oracle-xe \
       --security-group devel_oracle_xe_sg \
       --wait \
       oracle-xe
@@ -28,7 +28,7 @@
       ssh -oBatchMode=yes -oStrictHostKeyChecking=no centos@{{ item }} true
     register: result
     until: result is success
-    retries: 30
+    retries: 5
     delay: 10
     with_items:
       - "{{ instance_ip.stdout }}"

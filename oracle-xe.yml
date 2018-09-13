@@ -27,13 +27,11 @@
     yum:
       name: "*"
       state: latest
-    become: yes
 
   - name: install required software
     yum:
       name: "{{ item }}"
       state: latest
-    become: yes
     with_items:
       - unzip
       - libaio
@@ -64,7 +62,6 @@
 
   - name: oracle xe configure
     command: /etc/init.d/oracle-xe configure responseFile={{ oracle_xe_response_file }}
-    become: yes
 
   - name: copy bash_profile to user oracle
     copy:
@@ -76,4 +73,3 @@
       path: "/u01/app/oracle/.bash_profile"
       owner: "oracle"
       group: "dba"
-
