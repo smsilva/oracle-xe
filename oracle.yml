@@ -1,0 +1,65 @@
+---
+- hosts: oracle-xe.example.com
+  name: Oracle Database 11g XE Install
+
+  tasks:
+
+  - set_fact:
+      install_dir_local: "{{ oracle.install_dir_local }}"
+      install_dir_remote: "{{ oracle.install_dir_remote }}"
+      install_zip_file: "{{ oracle.install_zip_file }}"
+      install_zip_file_remote: "{{ oracle.install_dir_remote }}/{{ oracle.install_zip_file }}"
+      oracle_xe_install_log_file: "xe_silent_install.log"
+  
+  - name: system update
+    yum:
+      name: "*"
+      state: latest
+
+  - name: install required software
+    yum:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - unzip
+      - libaio
+      - bc
+      - net-tools
+      - vim
+
+  - name: create remote install dir
+    file:
+      path: "{{ install_dir_remote }}"
+      state: directory
+
+  - name: copy files
+    copy:
+      src: "{{ install_dir_local }}"
+      dest: "{{ install_dir_remote }}"
+
+  - name: unarchive rpm installation zip file
+    unarchive:
+      src: "{{ install_zip_file_remote }}"
+      dest: "{{ install_dir_remote }}"
+      remote_src: yes
+
+  - name: oracle xe silent install
+    shell: rpm -ivh {{ install_dir_remote }}/Disk1/oracle-xe-11.2.0-1.0.x86_64.rpm > {{ oracle_xe_install_log_file }}
+    args:
+      warn: false
+
+  - name: oracle xe configure
+    shell: >
+      /etc/init.d/oracle-xe configure responseFile=/root/oracle/xe.rsp >> {{ oracle_xe_install_log_file }}
+
+  - name: copy bash_profile to user oracle
+    copy:
+      src: "{{ install_dir_local }}.bash_profile"
+      dest: "/u01/app/oracle/"
+
+  - name: change bash_profile ownership to oracle:dba
+    file: 
+      path: "/u01/app/oracle/.bash_profile"
+      owner: "oracle"
+      group: "dba"
+
