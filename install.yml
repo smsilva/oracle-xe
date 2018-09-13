@@ -1,0 +1,3 @@
+---
+- import_playbook: openstack/prepare.yml
+- import_playbook: oracle-xe.yml

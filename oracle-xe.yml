@@ -10,16 +10,30 @@
       install_zip_file: "{{ oracle.install_zip_file }}"
       install_zip_file_remote: "{{ oracle.install_dir_remote }}/{{ oracle.install_zip_file }}"
       oracle_xe_install_log_file: "xe_silent_install.log"
-  
+      oracle_xe_config_log_file: "xe_silent_config.log"
+      oracle_xe_response_file: "{{ oracle.install_dir_remote }}/xe.rsp"
+      oracle_xe_instance_ip: $(openstack floating ip list --port port-32 -f value -c "Floating IP Address")
+ 
+  - name: create swap file
+    shell: >
+      fallocate -l 2G /swapfile && \
+      chmod 600 /swapfile && \
+      mkswap /swapfile && \
+      swapon /swapfile && \
+      echo "/swapfile   swap    swap    sw  0   0" | tee -a /etc/fstab && \
+      free -m
+
   - name: system update
     yum:
       name: "*"
       state: latest
+    become: yes
 
   - name: install required software
     yum:
       name: "{{ item }}"
       state: latest
+    become: yes
     with_items:
       - unzip
       - libaio
@@ -44,13 +58,13 @@
       remote_src: yes
 
   - name: oracle xe silent install
-    shell: rpm -ivh {{ install_dir_remote }}/Disk1/oracle-xe-11.2.0-1.0.x86_64.rpm > {{ oracle_xe_install_log_file }}
+    shell: sudo rpm -ivh {{ install_dir_remote }}/Disk1/oracle-xe-11.2.0-1.0.x86_64.rpm > {{ oracle_xe_install_log_file }}
     args:
       warn: false
 
   - name: oracle xe configure
-    shell: >
-      /etc/init.d/oracle-xe configure responseFile=/root/oracle/xe.rsp >> {{ oracle_xe_install_log_file }}
+    command: /etc/init.d/oracle-xe configure responseFile={{ oracle_xe_response_file }}
+    become: yes
 
   - name: copy bash_profile to user oracle
     copy:

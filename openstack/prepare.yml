@@ -1,0 +1,34 @@
+---
+- hosts: openstack
+  name: OpenStack Instance Creation
+
+  tasks:
+
+  - set_fact:
+      oracle_xe_instance_ip: $(openstack floating ip list --port port-32 -f value -c "Floating IP Address")
+
+  - name: register instance ip
+    shell: >
+      echo "{{ oracle_xe_instance_ip }}"
+    register: instance_ip
+
+  - name: openstack instance creation
+    shell: >
+      openstack server create \
+      --image centos7 \
+      --flavor m1.small \
+      --key-name director \
+      --port port-32 \
+      --security-group devel_oracle_xe_sg \
+      --wait \
+      oracle-xe
+
+  - name: wait for SSH on created instance
+    command: >
+      ssh -oBatchMode=yes -oStrictHostKeyChecking=no centos@{{ item }} true
+    register: result
+    until: result is success
+    retries: 30
+    delay: 10
+    with_items:
+      - "{{ instance_ip.stdout }}"
