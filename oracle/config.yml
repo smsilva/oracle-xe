@@ -1,0 +1,24 @@
+---
+- hosts: oracle-xe.example.com
+  name: Oracle Database 11g XE Initial Database Config
+
+  tasks:
+
+  - name: create scripts directory on /u01/app/oracle/
+    file:
+      path: "/u01/app/oracle/scripts"
+      state: directory
+      owner: oracle
+      group: dba
+
+  - name: copy SQL file
+    copy:
+      src: "objects.sql"
+      dest: "/u01/app/oracle/scripts/objects.sql"
+      owner: "oracle"
+      group: "dba"
+
+  - name: execute SQL Script
+    shell: sudo su - oracle -c "sqlplus system/oracle@xe @/u01/app/oracle/scripts/objects.sql"
+    args:
+      warn: false #during the logon, oracle user has a bash_profile to load oracle env parameters

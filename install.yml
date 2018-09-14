@@ -1,3 +1,4 @@
 ---
 - import_playbook: openstack/prepare.yml
-- import_playbook: oracle-xe.yml
+- import_playbook: oracle/install.yml
+- import_playbook: oracle/config.yml

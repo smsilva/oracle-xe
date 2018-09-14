@@ -1,0 +1,18 @@
+CREATE USER silvio IDENTIFIED BY oracle;
+
+GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO silvio;
+
+CONN silvio/oracle@xe;
+
+CREATE TABLE person(
+  id   INTEGER       NOT NULL PRIMARY KEY,
+  name VARCHAR2(100) NOT NULL
+);
+
+INSERT INTO person(id, name) VALUES(1, 'NAME #1');
+INSERT INTO person(id, name) VALUES(2, 'NAME #2');
+INSERT INTO person(id, name) VALUES(3, 'NAME #3');
+
+COMMIT;
+
+EXIT;
