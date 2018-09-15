@@ -1,0 +1,13 @@
+---
+- hosts: openstack
+  name: Ansible Inventory File Creation with Oracle Instances
+
+  vars_files:
+    - vars/oracle.yml
+
+  tasks:
+
+  - name: creates ansible inventory file using oracle instance information
+    template:
+      src: inventory.ini.j2
+      dest: ./inventory.ini

@@ -1,3 +1,4 @@
 ---
 - import_playbook: destruction.yml
 - import_playbook: creation.yml
+- import_playbook: inventory.yml

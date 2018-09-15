@@ -6,8 +6,8 @@ oracle:
       ip: 192.168.1.40
     oracle-xe-hml:
       ip: 192.168.1.41
-    oracle-xe-dev:
-      ip: 192.168.1.42
+    #oracle-xe-dev:
+    #  ip: 192.168.1.42
 
   network:
     private: "devel_net"
