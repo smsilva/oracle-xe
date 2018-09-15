@@ -1,0 +1,8 @@
+---
+- name: port creation
+  shell: >
+    openstack port create \
+    --security-group {{ oracle.config.security_group }} \
+    --network {{ oracle.network.private }} \
+    port-{{ item.key }}
+  with_dict: "{{ oracle.servers }}"

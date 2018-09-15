@@ -1,0 +1,8 @@
+---
+- name: floating ip creation
+  shell: >
+    openstack floating ip create \
+    --port port-{{ item.key }} \
+    --floating-ip-address {{ item.value.ip }} \
+    {{ oracle.network.public }}
+  with_dict: "{{ oracle.servers }}"

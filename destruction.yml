@@ -1,0 +1,12 @@
+---
+- hosts: openstack
+  name: OpenStack Objects Destruction
+
+  vars_files:
+    - vars/oracle.yml
+
+  tasks:
+
+  - import_tasks: destruction/instances.yml
+  - import_tasks: destruction/floating-ip.yml
+  - import_tasks: destruction/ports.yml

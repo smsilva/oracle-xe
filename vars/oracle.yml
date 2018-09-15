@@ -1,0 +1,19 @@
+---
+oracle:
+
+  servers:
+    oracle-xe-prd:
+      ip: 192.168.1.40
+    oracle-xe-hml:
+      ip: 192.168.1.41
+
+  network:
+    private: "devel_net"
+    public: "public_network"
+
+  config:
+    image: "centos7"
+    flavor: "m1.small"
+    key: "director"
+    security_group: "devel_oracle_xe_sg"
+

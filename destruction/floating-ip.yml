@@ -1,0 +1,5 @@
+---
+- name: delete floating ip addresses
+  shell: >
+    openstack floating ip delete {{ item.value.ip }}
+  with_dict: "{{ oracle.servers }}"

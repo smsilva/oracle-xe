@@ -1,0 +1,18 @@
+---
+- name: instance creation
+  shell: >
+    openstack server create \
+    --image {{ oracle.config.image }} \
+    --flavor {{ oracle.config.flavor }} \
+    --key-name {{ oracle.config.key }} \
+    --port port-{{ item.key }} \
+    {{ item.key }}
+  with_dict: "{{ oracle.servers }}"
+
+- name: wait for SSH each instance
+  command: "ssh -oBatchMode=yes -oStrictHostKeyChecking=no centos@{{ item.value.ip }} true"
+  register: result
+  until: result is success
+  retries: 5
+  delay: 10
+  with_dict: "{{ oracle.servers }}"

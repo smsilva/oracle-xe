@@ -1,0 +1,12 @@
+---
+- hosts: openstack
+  name: OpenStack Objects Creation
+
+  vars_files:
+    - vars/oracle.yml
+
+  tasks:
+
+  - import_tasks: creation/ports.yml
+  - import_tasks: creation/floating-ip.yml
+  - import_tasks: creation/instances.yml

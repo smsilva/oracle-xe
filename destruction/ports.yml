@@ -1,0 +1,5 @@
+---
+- name: delete ports
+  shell: >
+    openstack port delete port-{{ item.key }}
+  with_dict: "{{ oracle.servers }}"
