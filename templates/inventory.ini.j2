@@ -1,4 +1,4 @@
 [oracle]
-{% for host in groups['oracle'] %}
-{{ host }} xxxxxx
+{% for server in oracle.servers.keys() %}
+{{ server }} ansible_host={{ oracle.servers[server].ip }} ansible_user=centos ansible_become=yes
 {% endfor %}
