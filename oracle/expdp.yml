@@ -1,0 +1,37 @@
+---
+- hosts: oracle-xe-prd
+  name: Oracle Data Pump Export
+  vars:
+    expdpfile: expdp_silvio_$(date +%Y-%m-%d_%H-%M-%S) 
+
+  tasks:
+
+  - name: register file name
+    shell: echo "{{ expdpfile }}"
+    register: expdpfile_name
+
+  - name: create temp directory
+    file:
+      path: "/temp/"
+      state: directory
+      mode: 0667
+
+  - name: expdp
+    shell: sudo su - oracle -c "expdp system/oracle@xe DUMPFILE={{ expdpfile_name.stdout }}.dmp LOGFILE={{ expdpfile_name.stdout }}.log SCHEMAS=silvio"
+    args:
+      warn: no
+
+  - name: copy file to /temp/ directory
+    shell: >
+      sudo su - oracle -c "cp /u01/app/oracle/admin/XE/dpdump/{{ expdpfile_name.stdout }}.dmp /temp/"
+
+  - name: change file owner to allow copy using scp
+    file:
+      path: "/temp/{{ expdpfile_name.stdout }}.dmp"
+      owner: centos
+      group: centos
+
+  - name: copy dump file from remote host
+    fetch:
+      src: "/temp/{{ expdpfile_name.stdout }}.dmp"
+      dest: "/temp/oracle/"
