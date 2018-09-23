@@ -6,7 +6,7 @@
     --description "Oracle Database Express Security Group" \
     {{ oracle.config.security_group }}
 
-- name: oracle security group - rule: icmp
+- name: oracle security group rule - icmp
   shell: >
     openstack security group rule create \
     --proto icmp \
@@ -14,7 +14,7 @@
     --dst-port -1 \
     {{ oracle.config.security_group }}
 
-- name: oracle security group - rule: 22/tcp
+- name: oracle security group rule - 22/tcp
   shell: >
     openstack security group rule create \
     --protocol tcp \
@@ -22,7 +22,7 @@
     --dst-port 22 \
     {{ oracle.config.security_group }}
 
-- name: oracle security group - rule: 1521/tcp
+- name: oracle security group rule - 1521/tcp
   shell: >
     openstack security group rule create \
     --proto tcp \
