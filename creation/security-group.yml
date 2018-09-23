@@ -1,0 +1,31 @@
+---
+- name: oracle security group creation
+  shell: >
+    openstack security group create \
+    --project {{ oracle.config.project }} \
+    --description "Oracle Database Express Security Group" \
+    {{ oracle.config.security_group }}
+
+- name: oracle security group - rule: icmp
+  shell: >
+    openstack security group rule create \
+    --proto icmp \
+    --remote-ip 0.0.0.0/0 \
+    --dst-port -1 \
+    {{ oracle.config.security_group }}
+
+- name: oracle security group - rule: 22/tcp
+  shell: >
+    openstack security group rule create \
+    --protocol tcp \
+    --remote-ip 0.0.0.0/0 \
+    --dst-port 22 \
+    {{ oracle.config.security_group }}
+
+- name: oracle security group - rule: 1521/tcp
+  shell: >
+    openstack security group rule create \
+    --proto tcp \
+    --remote-ip 0.0.0.0/0 \
+    --dst-port 1521 \
+    {{ oracle.config.security_group }}
