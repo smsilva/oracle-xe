@@ -2,3 +2,4 @@
 - name: oracle security group deletion
   shell: >
     openstack security group delete {{ oracle.config.security_group }}
+  ignore_errors: yes
