@@ -9,10 +9,10 @@
     {{ item.key }}
   with_dict: "{{ oracle.servers }}"
 
-- name: wait for SSH each instance
+- name: wait for SSH on each instance
   command: "ssh -oBatchMode=yes -oStrictHostKeyChecking=no centos@{{ item.value.ip }} true"
   register: result
   until: result is success
-  retries: 5
+  retries: 10
   delay: 10
   with_dict: "{{ oracle.servers }}"
